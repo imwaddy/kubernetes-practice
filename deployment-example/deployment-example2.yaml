@@ -1,22 +1,51 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: go-sample-app
+data:
+  PORT: '8081'
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: go-app-deployment
+  name: go-app-server-deployment
   namespace: default
   labels:
-    app: go-app-deployment
+    app: go-app-server
 spec:
   selector:
     matchLabels:
-      app: go-app-deployment
-  replicas: 2
+      app: go-app-server-deployment
+  replicas: 1
   template:
     metadata:
       labels:
-        app: go-app-deployment
+        app: go-app-server-deployment
     spec:
       containers:
         - name: go-sample-app
-          image: go-sample-app:latest
+          image: mayurwadekar2/go-app-server:2.0.0
           ports:
             - containerPort: 8081
+          envFrom:
+            - configMapRef:
+               name: go-sample-app
+          # resources:
+          #   limits:
+          #     memory:  "512Mi"
+          #     cpu: "1"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-app-server
+spec:
+  selector:
+    app: go-app-server-deployment
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+      nodePort: 30000
+  type: NodePort
+---
