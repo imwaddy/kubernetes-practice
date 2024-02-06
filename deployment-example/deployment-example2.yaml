@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: go-sample-app
 data:
-  PORT: '8080'
+  PORT: '8081'
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: go-sample-app
-          image: mayurwadekar2/go-app-server:1.0.0
+          image: mayurwadekar2/go-app-server:2.0.0
           ports:
             - containerPort: 8081
           envFrom:
